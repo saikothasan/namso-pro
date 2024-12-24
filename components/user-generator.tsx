@@ -6,14 +6,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { generateUsers, UserFields, GenerateOptions } from '@/lib/user-generator'
+import { generateUsers, UserFields, GenerateOptions, GeneratedUser } from '@/lib/user-generator'
 import { Copy, Download, RefreshCw } from 'lucide-react'
 import { toast } from 'sonner'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export function UserGenerator() {
-  const [quantity, setQuantity] = useState('10')
+  const [quantity, setQuantity] = useState<string>('10')
   const [fields, setFields] = useState<UserFields>({
     id: true,
     firstName: true,
@@ -33,33 +33,35 @@ export function UserGenerator() {
     jobTitle: false,
   })
   const [gender, setGender] = useState<'male' | 'female' | 'random'>('random')
-  const [country, setCountry] = useState<string | null>(null)
-  const [generatedUsers, setGeneratedUsers] = useState<any[]>([])
-  const [activeTab, setActiveTab] = useState('json')
+  const [locale, setLocale] = useState<string | null>(null) // Renamed from "country" to "locale" for clarity
+  const [generatedUsers, setGeneratedUsers] = useState<GeneratedUser[]>([]) // Updated type
+  const [activeTab, setActiveTab] = useState<string>('json')
 
   const handleGenerate = () => {
     const options: GenerateOptions = {
-      quantity: parseInt(quantity),
+      quantity: parseInt(quantity, 10),
       fields,
       gender,
-      country,
+      locale: locale || undefined, // Pass `undefined` if locale is null
     }
     const users = generateUsers(options)
     setGeneratedUsers(users)
   }
 
   const handleCopy = () => {
-    const text = activeTab === 'json' 
-      ? JSON.stringify(generatedUsers, null, 2)
-      : generatedUsers.map(user => Object.values(user).join(',')).join('\n')
+    const text =
+      activeTab === 'json'
+        ? JSON.stringify(generatedUsers, null, 2)
+        : generatedUsers.map(user => Object.values(user).join(',')).join('\n')
     navigator.clipboard.writeText(text)
     toast.success('Copied to clipboard!')
   }
 
   const handleDownload = () => {
-    const text = activeTab === 'json' 
-      ? JSON.stringify(generatedUsers, null, 2)
-      : generatedUsers.map(user => Object.values(user).join(',')).join('\n')
+    const text =
+      activeTab === 'json'
+        ? JSON.stringify(generatedUsers, null, 2)
+        : generatedUsers.map(user => Object.values(user).join(',')).join('\n')
     const blob = new Blob([text], { type: activeTab === 'json' ? 'application/json' : 'text/csv' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -95,7 +97,7 @@ export function UserGenerator() {
           </div>
           <div>
             <Label htmlFor="gender">Gender</Label>
-            <Select value={gender} onValueChange={(value: 'male' | 'female' | 'random') => setGender(value)}>
+            <Select value={gender} onValueChange={(value) => setGender(value as 'male' | 'female' | 'random')}>
               <SelectTrigger id="gender" className="mt-1">
                 <SelectValue placeholder="Select gender" />
               </SelectTrigger>
@@ -109,13 +111,13 @@ export function UserGenerator() {
         </div>
 
         <div>
-          <Label htmlFor="country">Country (optional)</Label>
+          <Label htmlFor="locale">Locale (optional)</Label>
           <Input
-            id="country"
+            id="locale"
             type="text"
-            value={country || ''}
-            onChange={(e) => setCountry(e.target.value || null)}
-            placeholder="Enter country code (e.g., US, GB, FR)"
+            value={locale || ''}
+            onChange={(e) => setLocale(e.target.value || null)}
+            placeholder="Enter locale code (e.g., en_US, fr_FR)"
             className="mt-1"
           />
         </div>
@@ -183,4 +185,3 @@ export function UserGenerator() {
     </Card>
   )
 }
-
