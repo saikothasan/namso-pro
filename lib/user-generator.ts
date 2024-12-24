@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker/locale/en';
+import { faker } from '@faker-js/faker';
 
 export interface UserFields {
   id: boolean
@@ -23,14 +23,14 @@ export interface GenerateOptions {
   quantity: number
   fields: UserFields
   gender: 'male' | 'female' | 'random'
-  country: string | null
+  locale?: string // Added locale type here
 }
 
 export function generateUsers(options: GenerateOptions) {
-  const { quantity, fields, gender, country } = options
+  const { quantity, fields, gender, locale } = options
 
   return Array.from({ length: quantity }, () => {
-    faker.locale = country || faker.locale
+    faker.locale = locale || faker.locale
     const userGender = gender === 'random' ? (Math.random() > 0.5 ? 'male' : 'female') : gender
     
     const user: any = {}
