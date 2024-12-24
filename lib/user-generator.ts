@@ -1,5 +1,4 @@
-import { faker } from '@faker-js/faker';
-import { fakerEN, fakerFR } from '@faker-js/faker/locales'; // Import specific locales
+import { allFakers, allLocales } from '@faker-js/faker';
 
 export interface UserFields {
   id: boolean;
@@ -30,8 +29,11 @@ export interface GenerateOptions {
 export function generateUsers(options: GenerateOptions) {
   const { quantity, fields, gender, country } = options;
 
-  // Use the correct locale
-  const fakerInstance = country === 'fr' ? faker.fakerFR : faker.fakerEN;
+  // Set faker locale dynamically, fallback to 'en' if locale is invalid
+  const fakerInstance = baseFaker.localize({
+    ...locales,
+    default: country && locales[country] ? country : 'en',
+  });
 
   return Array.from({ length: quantity }, () => {
     const userGender = gender === 'random' ? (Math.random() > 0.5 ? 'male' : 'female') : gender;
