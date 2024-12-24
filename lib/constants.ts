@@ -19,7 +19,7 @@ export const CURRENCIES = {
   'AUD': { symbol: 'A$', name: 'Australian Dollar' },
   'CAD': { symbol: 'C$', name: 'Canadian Dollar' },
   'CHF': { symbol: 'CHF', name: 'Swiss Franc' },
-  'CNY': { symbol: '��', name: 'Chinese Yuan' },
+  'CNY': { symbol: '¥', name: 'Chinese Yuan' },
   'INR': { symbol: '₹', name: 'Indian Rupee' },
 } as const;
 

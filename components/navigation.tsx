@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { CreditCard, Users, CheckCircle, Search, Menu, X, Home, Info, HelpCircle } from 'lucide-react'
+import { CreditCard, Users, CheckCircle, Search, Menu, X, Home, Info, HelpCircle, Key } from 'lucide-react'
 import {
   Sheet,
   SheetContent,
@@ -37,6 +37,11 @@ const routes = [
     href: '/bin-checker',
     label: 'BIN Checker',
     icon: Search
+  },
+  {
+    href: '/password-generator',
+    label: 'Password Generator',
+    icon: Key
   },
   {
     href: '/about',
