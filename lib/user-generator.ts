@@ -1,6 +1,5 @@
 import { faker } from '@faker-js/faker';
 
-// Define the structure of fields that can be generated
 export interface UserFields {
   id: boolean;
   firstName: boolean;
@@ -20,15 +19,13 @@ export interface UserFields {
   jobTitle: boolean;
 }
 
-// Define the options for user generation
 export interface GenerateOptions {
   quantity: number;
   fields: UserFields;
   gender: 'male' | 'female' | 'random';
-  locale?: string; // Locale for faker data
+  locale?: string; // Updated to match usage
 }
 
-// Define the structure of a generated user
 export interface GeneratedUser {
   id?: string;
   firstName?: string;
@@ -48,15 +45,14 @@ export interface GeneratedUser {
   jobTitle?: string;
 }
 
-// Function to generate users
 export function generateUsers(options: GenerateOptions): GeneratedUser[] {
   const { quantity, fields, gender, locale } = options;
 
-  // Set faker locale if provided
-  if (locale) faker.locale = locale;
+  if (locale) {
+    faker.locale = locale; // Dynamically set locale
+  }
 
-  // Generate users
-  return Array.from({ length: quantity }, (): GeneratedUser => {
+  return Array.from({ length: quantity }, () => {
     const userGender = gender === 'random' ? (Math.random() > 0.5 ? 'male' : 'female') : gender;
 
     const user: GeneratedUser = {};
@@ -64,10 +60,7 @@ export function generateUsers(options: GenerateOptions): GeneratedUser[] {
     if (fields.id) user.id = faker.string.uuid();
     if (fields.firstName) user.firstName = faker.person.firstName(userGender);
     if (fields.lastName) user.lastName = faker.person.lastName(userGender);
-    if (fields.email) user.email = faker.internet.email({
-      firstName: user.firstName || '',
-      lastName: user.lastName || '',
-    });
+    if (fields.email) user.email = faker.internet.email({ firstName: user.firstName, lastName: user.lastName });
     if (fields.phone) user.phone = faker.phone.number();
     if (fields.address) user.address = faker.location.streetAddress();
     if (fields.city) user.city = faker.location.city();
@@ -78,10 +71,7 @@ export function generateUsers(options: GenerateOptions): GeneratedUser[] {
       user.birthDate = birthDate.toISOString().split('T')[0];
       if (fields.age) user.age = new Date().getFullYear() - birthDate.getFullYear();
     }
-    if (fields.username) user.username = faker.internet.userName({
-      firstName: user.firstName || '',
-      lastName: user.lastName || '',
-    });
+    if (fields.username) user.username = faker.internet.userName({ firstName: user.firstName, lastName: user.lastName });
     if (fields.password) user.password = faker.internet.password();
     if (fields.avatar) user.avatar = faker.image.avatar();
     if (fields.company) user.company = faker.company.name();
