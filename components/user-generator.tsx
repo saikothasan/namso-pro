@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label"
 import { generateUsers, UserFields, GenerateOptions } from '@/lib/user-generator'
 import { Copy, Download, RefreshCw } from 'lucide-react'
 import { toast } from 'sonner'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export function UserGenerator() {
@@ -23,17 +22,9 @@ export function UserGenerator() {
     address: true,
     city: true,
     country: true,
-    zipCode: true,
     birthDate: true,
-    age: true,
     username: true,
-    password: true,
-    avatar: false,
-    company: false,
-    jobTitle: false,
   })
-  const [gender, setGender] = useState<'male' | 'female' | 'random'>('random')
-  const [country, setCountry] = useState<string | null>(null)
   const [generatedUsers, setGeneratedUsers] = useState<any[]>([])
   const [activeTab, setActiveTab] = useState('json')
 
@@ -41,8 +32,6 @@ export function UserGenerator() {
     const options: GenerateOptions = {
       quantity: parseInt(quantity),
       fields,
-      gender,
-      country,
     }
     const users = generateUsers(options)
     setGeneratedUsers(users)
@@ -80,42 +69,15 @@ export function UserGenerator() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <Label htmlFor="quantity">Quantity</Label>
-            <Input
-              id="quantity"
-              type="number"
-              min="1"
-              max="1000"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="gender">Gender</Label>
-            <Select value={gender} onValueChange={(value: 'male' | 'female' | 'random') => setGender(value)}>
-              <SelectTrigger id="gender" className="mt-1">
-                <SelectValue placeholder="Select gender" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="random">Random</SelectItem>
-                <SelectItem value="male">Male</SelectItem>
-                <SelectItem value="female">Female</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
         <div>
-          <Label htmlFor="country">Country (optional)</Label>
+          <Label htmlFor="quantity">Quantity</Label>
           <Input
-            id="country"
-            type="text"
-            value={country || ''}
-            onChange={(e) => setCountry(e.target.value || null)}
-            placeholder="Enter country code (e.g., US, GB, FR)"
+            id="quantity"
+            type="number"
+            min="1"
+            max="1000"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
             className="mt-1"
           />
         </div>
