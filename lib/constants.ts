@@ -9,7 +9,7 @@ export const NETWORKS = {
   'maestro': { prefix: '5018,5020,5038,5893,6304,6759,6761,6762,6763', length: 16 },
   'mir': { prefix: '2200,2201,2202,2203,2204', length: 16 },
   'random': { prefix: '', length: 16 },
-}
+} as const;
 
 export const CURRENCIES = {
   'USD': { symbol: '$', name: 'United States Dollar' },
@@ -19,21 +19,34 @@ export const CURRENCIES = {
   'AUD': { symbol: 'A$', name: 'Australian Dollar' },
   'CAD': { symbol: 'C$', name: 'Canadian Dollar' },
   'CHF': { symbol: 'CHF', name: 'Swiss Franc' },
-  'CNY': { symbol: '¥', name: 'Chinese Yuan' },
+  'CNY': { symbol: '��', name: 'Chinese Yuan' },
   'INR': { symbol: '₹', name: 'Indian Rupee' },
-}
+} as const;
 
 export const CARD_FORMATS = {
   'PIPE': 'Pipe (|)',
   'SPACE': 'Space',
   'DASH': 'Dash (-)',
   'NONE': 'None'
-}
+} as const;
 
 export const BALANCE_RANGES = {
   '100-500': { min: 100, max: 500 },
   '500-1000': { min: 500, max: 1000 },
   '1000-5000': { min: 1000, max: 5000 },
   '5000-10000': { min: 5000, max: 10000 },
-}
+} as const;
+
+export const USER_FIELDS = [
+  { id: 'id', label: 'ID' },
+  { id: 'firstName', label: 'First Name' },
+  { id: 'lastName', label: 'Last Name' },
+  { id: 'email', label: 'Email' },
+  { id: 'phone', label: 'Phone' },
+  { id: 'address', label: 'Address' },
+  { id: 'city', label: 'City' },
+  { id: 'country', label: 'Country' },
+  { id: 'birthDate', label: 'Birth Date' },
+  { id: 'username', label: 'Username' },
+] as const;
 

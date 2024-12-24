@@ -30,18 +30,27 @@ export function generateCard(
 
   if (!cardNumber) {
     if (network === 'random') {
-      const networks = Object.keys(NETWORKS).filter(n => n !== 'random');
-      network = networks[Math.floor(Math.random() * networks.length)] as keyof typeof NETWORKS;
+      const networks = Object.keys(NETWORKS).filter(n => n !== 'random') as Array<keyof typeof NETWORKS>;
+      network = networks[Math.floor(Math.random() * networks.length)];
     }
     const prefixes = NETWORKS[network].prefix.split(',');
     cardNumber = prefixes[Math.floor(Math.random() * prefixes.length)];
   }
 
   const length = NETWORKS[network].length;
+
+  // Ensure the BIN is valid for the selected network
+  if (!NETWORKS[network].prefix.split(',').some(prefix => cardNumber.startsWith(prefix))) {
+    const validPrefix = NETWORKS[network].prefix.split(',')[0];
+    cardNumber = validPrefix + cardNumber.slice(validPrefix.length);
+  }
+
+  // Generate the remaining digits
   while (cardNumber.length < length - 1) {
     cardNumber += Math.floor(Math.random() * 10).toString();
   }
 
+  // Apply Luhn algorithm to make the card number valid
   return generateLuhnNumber(cardNumber);
 }
 
@@ -49,10 +58,10 @@ export function generateRandomDate(): { month: string; year: string } {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
-  
+
   let randomYear = currentYear + Math.floor(Math.random() * 5);
   let randomMonth = Math.floor(Math.random() * 12) + 1;
-  
+
   if (randomYear === currentYear && randomMonth <= currentMonth) {
     randomMonth = currentMonth + 1 + Math.floor(Math.random() * (12 - currentMonth));
   }
@@ -69,10 +78,10 @@ export function generateCVV(isAmex: boolean = false): string {
   return Math.floor(Math.random() * (max - min + 1) + min).toString();
 }
 
-export function generateBalance(currency: string, balanceRange: string): string {
-  const { min, max } = BALANCE_RANGES[balanceRange as keyof typeof BALANCE_RANGES];
+export function generateBalance(currency: keyof typeof CURRENCIES, balanceRange: keyof typeof BALANCE_RANGES): string {
+  const { min, max } = BALANCE_RANGES[balanceRange];
   const balance = (Math.random() * (max - min) + min).toFixed(2);
-  return `${CURRENCIES[currency as keyof typeof CURRENCIES].symbol}${balance}`;
+  return `${CURRENCIES[currency].symbol}${balance}`;
 }
 
 export interface GenerateOptions {
@@ -82,8 +91,8 @@ export interface GenerateOptions {
   includeDates: boolean;
   includeCVV: boolean;
   includeBalance: boolean;
-  currency: string;
-  balanceRange: string;
+  currency: keyof typeof CURRENCIES;
+  balanceRange: keyof typeof BALANCE_RANGES;
   format: string;
 }
 

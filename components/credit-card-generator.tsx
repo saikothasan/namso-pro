@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
-import { Copy, RotateCcw, Settings, RefreshCw } from 'lucide-react'
+import { Copy, RotateCcw, RefreshCw, CreditCardIcon as CardIcon } from 'lucide-react'
 import { generateCards, type GenerateOptions } from '@/lib/card-generator'
 import { NETWORKS, CURRENCIES, CARD_FORMATS, BALANCE_RANGES } from '@/lib/constants'
 import { Switch } from "@/components/ui/switch"
@@ -33,6 +33,7 @@ export function CreditCardGenerator() {
       const cards = generateCards(options)
       setGeneratedCards(cards)
     } catch (error) {
+      console.error('Error generating cards:', error)
       toast.error('Error generating cards. Please check your inputs.')
     }
   }
@@ -42,6 +43,7 @@ export function CreditCardGenerator() {
       await navigator.clipboard.writeText(generatedCards.join('\n'))
       toast.success('Copied to clipboard!')
     } catch (error) {
+      console.error('Error copying to clipboard:', error)
       toast.error('Failed to copy to clipboard')
     }
   }
@@ -62,33 +64,38 @@ export function CreditCardGenerator() {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900 dark:to-indigo-900">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center text-blue-700 dark:text-blue-300">Credit Card Generator</CardTitle>
-        <CardDescription className="text-center text-blue-600 dark:text-blue-400">
-          Generate valid test credit card numbers for development and testing purposes.
+    <Card className="w-full max-w-4xl mx-auto overflow-hidden bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900">
+      <CardHeader className="space-y-1 text-center pb-8 pt-10">
+        <div className="mx-auto w-16 h-16 mb-4 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center shadow-lg animate-pulse-subtle">
+          <CardIcon className="h-8 w-8 text-white" />
+        </div>
+        <CardTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 text-transparent bg-clip-text">
+          Credit Card Generator
+        </CardTitle>
+        <CardDescription className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+          Generate valid test credit card numbers for development
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2">
+      <CardContent className="space-y-6 px-4 sm:px-6 pb-8">
+        <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="bin" className="text-blue-700 dark:text-blue-300">BIN</Label>
+            <Label htmlFor="bin" className="text-sm font-medium text-slate-700 dark:text-slate-300">BIN</Label>
             <Input
               id="bin"
               placeholder="Enter BIN (optional)"
               value={options.bin}
               onChange={(e) => setOptions(prev => ({ ...prev, bin: e.target.value }))}
               maxLength={8}
-              className="border-blue-300 dark:border-blue-700 focus:ring-blue-500 dark:focus:ring-blue-400"
+              className="transition-all duration-200 border-slate-200 hover:border-slate-300 focus:border-blue-500 dark:border-slate-700 dark:hover:border-slate-600"
             />
           </div>
           <div className="space-y-2">
-            <Label className="text-blue-700 dark:text-blue-300">CARD NETWORK</Label>
+            <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">CARD NETWORK</Label>
             <Select
               value={options.network}
               onValueChange={(value: keyof typeof NETWORKS) => setOptions(prev => ({ ...prev, network: value }))}
             >
-              <SelectTrigger className="border-blue-300 dark:border-blue-700">
+              <SelectTrigger className="transition-all duration-200 border-slate-200 hover:border-slate-300 focus:border-blue-500 dark:border-slate-700 dark:hover:border-slate-600">
                 <SelectValue placeholder="Select network" />
               </SelectTrigger>
               <SelectContent>
@@ -102,52 +109,61 @@ export function CreditCardGenerator() {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label className="text-blue-700 dark:text-blue-300">QUANTITY ({options.quantity})</Label>
+        <div className="space-y-4 p-4 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800">
+          <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+            QUANTITY ({options.quantity})
+          </Label>
           <Slider
             value={[options.quantity]}
             onValueChange={(value) => setOptions(prev => ({ ...prev, quantity: value[0] }))}
             max={1000}
             step={1}
+            className="py-4"
           />
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800">
             <Switch
               id="includeDates"
               checked={options.includeDates}
               onCheckedChange={(checked) => setOptions(prev => ({ ...prev, includeDates: checked }))}
             />
-            <Label htmlFor="includeDates" className="text-blue-700 dark:text-blue-300">Include Dates</Label>
+            <Label htmlFor="includeDates" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              Include Dates
+            </Label>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800">
             <Switch
               id="includeCVV"
               checked={options.includeCVV}
               onCheckedChange={(checked) => setOptions(prev => ({ ...prev, includeCVV: checked }))}
             />
-            <Label htmlFor="includeCVV" className="text-blue-700 dark:text-blue-300">Include CVV</Label>
+            <Label htmlFor="includeCVV" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              Include CVV
+            </Label>
           </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800">
             <Switch
               id="includeBalance"
               checked={options.includeBalance}
               onCheckedChange={(checked) => setOptions(prev => ({ ...prev, includeBalance: checked }))}
             />
-            <Label htmlFor="includeBalance" className="text-blue-700 dark:text-blue-300">Include Balance</Label>
+            <Label htmlFor="includeBalance" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              Include Balance
+            </Label>
           </div>
           {options.includeBalance && (
             <div className="space-y-2">
-              <Label className="text-blue-700 dark:text-blue-300">CURRENCY</Label>
+              <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">CURRENCY</Label>
               <Select
                 value={options.currency}
-                onValueChange={(value: string) => setOptions(prev => ({ ...prev, currency: value }))}
+                onValueChange={(value: keyof typeof CURRENCIES) => setOptions(prev => ({ ...prev, currency: value }))}
               >
-                <SelectTrigger className="border-blue-300 dark:border-blue-700">
+                <SelectTrigger className="transition-all duration-200 border-slate-200 hover:border-slate-300 focus:border-blue-500 dark:border-slate-700 dark:hover:border-slate-600">
                   <SelectValue placeholder="Select currency" />
                 </SelectTrigger>
                 <SelectContent>
@@ -164,18 +180,18 @@ export function CreditCardGenerator() {
 
         {options.includeBalance && (
           <div className="space-y-2">
-            <Label className="text-blue-700 dark:text-blue-300">BALANCE RANGE</Label>
+            <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">BALANCE RANGE</Label>
             <Select
               value={options.balanceRange}
-              onValueChange={(value: string) => setOptions(prev => ({ ...prev, balanceRange: value }))}
+              onValueChange={(value: keyof typeof BALANCE_RANGES) => setOptions(prev => ({ ...prev, balanceRange: value }))}
             >
-              <SelectTrigger className="border-blue-300 dark:border-blue-700">
+              <SelectTrigger className="transition-all duration-200 border-slate-200 hover:border-slate-300 focus:border-blue-500 dark:border-slate-700 dark:hover:border-slate-600">
                 <SelectValue placeholder="Select balance range" />
               </SelectTrigger>
               <SelectContent>
                 {Object.entries(BALANCE_RANGES).map(([range, { min, max }]) => (
                   <SelectItem key={range} value={range}>
-                    {CURRENCIES[options.currency as keyof typeof CURRENCIES].symbol}{min} - {CURRENCIES[options.currency as keyof typeof CURRENCIES].symbol}{max}
+                    {CURRENCIES[options.currency].symbol}{min} - {CURRENCIES[options.currency].symbol}{max}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -184,12 +200,12 @@ export function CreditCardGenerator() {
         )}
 
         <div className="space-y-2">
-          <Label className="text-blue-700 dark:text-blue-300">OUTPUT FORMAT</Label>
+          <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">OUTPUT FORMAT</Label>
           <Select
             value={options.format}
-            onValueChange={(value: string) => setOptions(prev => ({ ...prev, format: value }))}
+            onValueChange={(value: keyof typeof CARD_FORMATS) => setOptions(prev => ({ ...prev, format: value }))}
           >
-            <SelectTrigger className="border-blue-300 dark:border-blue-700">
+            <SelectTrigger className="transition-all duration-200 border-slate-200 hover:border-slate-300 focus:border-blue-500 dark:border-slate-700 dark:hover:border-slate-600">
               <SelectValue placeholder="Select output format" />
             </SelectTrigger>
             <SelectContent>
@@ -202,27 +218,27 @@ export function CreditCardGenerator() {
           </Select>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-2">
+        <div className="flex flex-col sm:flex-row gap-3 pt-4">
           <Button 
             onClick={handleGenerate}
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+            className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/35 transition-all duration-200"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
-            Generate
+            Generate Cards
           </Button>
           <Button
             variant="outline"
             onClick={handleCopy}
             disabled={generatedCards.length === 0}
-            className="border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300"
+            className="flex-1 border-slate-200 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:hover:border-slate-700 dark:hover:bg-slate-900/50 transition-all duration-200"
           >
             <Copy className="w-4 h-4 mr-2" />
-            Copy
+            Copy to Clipboard
           </Button>
           <Button
             variant="outline"
             onClick={handleReset}
-            className="border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300"
+            className="flex-1 border-slate-200 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:hover:border-slate-700 dark:hover:bg-slate-900/50 transition-all duration-200"
           >
             <RotateCcw className="w-4 h-4 mr-2" />
             Reset
@@ -230,12 +246,14 @@ export function CreditCardGenerator() {
         </div>
 
         {generatedCards.length > 0 && (
-          <Textarea
-            readOnly
-            className="font-mono text-sm border-blue-300 dark:border-blue-700 bg-white dark:bg-gray-800"
-            value={generatedCards.join('\n')}
-            rows={10}
-          />
+          <div className="mt-6 p-4 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800">
+            <Textarea
+              readOnly
+              className="font-mono text-xs sm:text-sm min-h-[200px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
+              value={generatedCards.join('\n')}
+              rows={10}
+            />
+          </div>
         )}
       </CardContent>
     </Card>

@@ -2,7 +2,11 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { Navigation } from '@/components/navigation'
 import { Footer } from '@/components/footer'
 import { Toaster } from '@/components/ui/sonner'
+import { TelegramBanner } from '@/components/telegram-banner'
 import './globals.css'
+import { Inter } from 'next/font/google'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'Testing Tools - Generate Test Data',
@@ -16,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-background font-sans antialiased">
+      <body className={`min-h-screen bg-background font-sans antialiased ${inter.className}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -27,6 +31,7 @@ export default function RootLayout({
             <Navigation />
             <main className="flex-1">{children}</main>
             <Footer />
+            <TelegramBanner />
           </div>
           <Toaster />
         </ThemeProvider>
