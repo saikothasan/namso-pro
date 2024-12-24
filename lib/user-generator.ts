@@ -31,17 +31,22 @@ export function generateUsers(options: GenerateOptions) {
 
   // Set the locale based on the country, if provided
   if (country) {
-    faker.setLocale(country.toLowerCase())
+    const lowercaseCountry = country.toLowerCase()
+    if (Object.keys(faker.locales).includes(lowercaseCountry)) {
+      faker.locale = lowercaseCountry
+    } else {
+      console.warn(`Invalid country code: ${country}. Using default locale.`)
+    }
   }
 
   return Array.from({ length: quantity }, () => {
     const userGender = gender === 'random' ? (Math.random() > 0.5 ? 'male' : 'female') : gender
     
-    const user: any = {}
+    const user: Record<string, any> = {}
     
     if (fields.id) user.id = faker.string.uuid()
-    if (fields.firstName) user.firstName = faker.person.firstName(userGender as 'male' | 'female')
-    if (fields.lastName) user.lastName = faker.person.lastName(userGender as 'male' | 'female')
+    if (fields.firstName) user.firstName = faker.person.firstName(userGender)
+    if (fields.lastName) user.lastName = faker.person.lastName(userGender)
     if (fields.email) user.email = faker.internet.email({ firstName: user.firstName, lastName: user.lastName })
     if (fields.phone) user.phone = faker.phone.number()
     if (fields.address) user.address = faker.location.streetAddress()
